@@ -1,2 +1,2 @@
 # jsonbee
-An very very very easy json parser
+好奇json如何解析出来的，于是试着做了一个简易的解析器，不完整支持json格式，纯粹写着玩，顺便练练手
