@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
-	"time"
+	// "time"
 )
 
 type Parser struct {
@@ -21,7 +21,6 @@ func NewParser(data []byte) *Parser {
 	p := new(Parser)
 	p.Input = data
 	p.Lex = lex
-	// p.wg = make(sync.WaitGroup)
 	return p
 }
 
