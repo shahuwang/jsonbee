@@ -52,6 +52,9 @@ func (l *Lexer) Back() {
 
 func (l *Lexer) Peek() rune {
 	r := l.Next()
+	if r == EOF {
+		return r
+	}
 	l.Back()
 	return r
 }

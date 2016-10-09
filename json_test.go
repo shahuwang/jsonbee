@@ -20,12 +20,15 @@ import (
 
 func TestParser(t *testing.T) {
 	data := []string{
+		`[] `,
+		`{}`,
 		`["a", "", "\"", 12, 0, 0.23, 4.090, -12, -0.45, -19, 0]`,
 		`{"a": 1}`,
 		`[1, "a", 1.90, {"c": 1, "b": [1,2]}]`,
-		`{"a": ["1", "a", {"c": 2}], "b": {"e": 1, "d": 3}}`,
+		`[1, "a", [1, 3], [{"a": 1}]]`,
+		`{"a": ["1", "a", {"c": 2}], "b": {"e": 1, "d": 3}, "c": 5}`,
 	}
-	for _, item := range data {
+	for i, item := range data {
 		fmt.Println("++++++++++++")
 		fmt.Println(item)
 		parser := NewParser([]byte(item))
@@ -33,7 +36,7 @@ func TestParser(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("%+v\n", value)
-		fmt.Println("===========")
+		fmt.Printf("item: %d, %+v\n", i, value)
+		fmt.Println("===========\n")
 	}
 }

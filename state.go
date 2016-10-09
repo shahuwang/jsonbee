@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -28,6 +29,12 @@ func StateAction(l *Lexer) StateFn {
 		return StateRightDict
 	case ':':
 		return StateColon
+	case EOF:
+		return nil
+	default:
+		fmt.Println("88888888888888")
+		fmt.Println(r)
+		return l.Errorf("wrong element")
 	}
 	return nil
 }
@@ -109,7 +116,8 @@ func StateNumber(l *Lexer) StateFn {
 	firstNumber := true
 	isFloat := false
 	for {
-		switch l.Next() {
+		r := l.Next()
+		switch r {
 		case '-':
 			if !isNumber(l.Peek()) {
 				return l.Errorf("minus must before number")
@@ -138,6 +146,8 @@ func StateNumber(l *Lexer) StateFn {
 				l.Start = l.Pos
 				return StateAction
 			}
+		default:
+			return l.Errorf("wrong number in %d", l.Pos)
 		}
 	}
 }
@@ -147,5 +157,5 @@ func isNumber(n rune) bool {
 }
 
 func isElemEnd(n rune) bool {
-	return strings.ContainsRune(",]}\n\r\t ", n)
+	return strings.ContainsRune(",]}\n\r\t ", n) || n == EOF
 }

@@ -4,12 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"sync"
+	"time"
 )
 
 type Parser struct {
 	Input  []byte
 	Lex    *Lexer
 	result interface{}
+	wg     sync.WaitGroup
 	err    error
 }
 
@@ -18,29 +21,40 @@ func NewParser(data []byte) *Parser {
 	p := new(Parser)
 	p.Input = data
 	p.Lex = lex
+	// p.wg = make(sync.WaitGroup)
 	return p
 }
 
 func (p *Parser) Parse() (interface{}, error) {
+	p.wg.Add(1)
 	go p.parse()
 	p.Lex.Run()
+	close(p.Lex.Items)
+	p.wg.Wait()
 	return p.result, p.err
 }
 
 func (p *Parser) parse() {
+	defer p.wg.Done()
 	flag := false
 	for item := range p.Lex.Items {
 		if flag {
 			// 说明解析完字典或者数组后，还有其他元素，语法不对
-			p.err = errors.New("Error: wrong end")
+			p.err = errors.New("json needs to be array or dict")
 			return
 		}
 		if item.Type == ItemArrayLeft {
 			p.result, p.err = p.parseArray()
+			flag = true
+			continue
 		}
 		if item.Type == ItemDictLeft {
 			p.result, p.err = p.parseDict()
+			flag = true
+			continue
 		}
+		p.err = errors.New("json needs to be array or dict")
+		return
 	}
 }
 
