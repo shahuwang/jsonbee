@@ -28,7 +28,6 @@ func (p *Parser) Parse() (interface{}, error) {
 	p.wg.Add(1)
 	go p.parse()
 	p.Lex.Run()
-	close(p.Lex.Items)
 	p.wg.Wait()
 	return p.result, p.err
 }

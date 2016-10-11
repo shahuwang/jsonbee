@@ -77,6 +77,7 @@ func (l *Lexer) Run() {
 	fn := StateAction(l)
 	for {
 		if fn == nil {
+			close(l.Items)
 			break
 		}
 		fn = fn(l)
